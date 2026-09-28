@@ -1,0 +1,172 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+@import "shadcn/tailwind.css";
+
+/* O tema segue o sistema operacional. Detalhes das escolhas em docs/design.md. */
+@custom-variant dark (@media (prefers-color-scheme: dark));
+
+/* ---------------------------------------------------------------------------
+ * Tokens do Bluff
+ * ------------------------------------------------------------------------- */
+:root {
+  --eucalipto: #dce3de; /* fundo */
+  --folha: #e8ede9; /* superfícies */
+  --papel: #f6f8f5; /* face da carta */
+  --nanquim: #18211e; /* texto e traço do verso */
+  --musgo: #52615b; /* texto secundário, bordas */
+  --caqui: #c8432a; /* o único acento */
+  --sobre-caqui: var(--papel);
+  --grao: 0.03;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --eucalipto: #141b19;
+    --folha: #1c2522;
+    --papel: #26302c;
+    --nanquim: #e4eae6;
+    --musgo: #93a39d;
+    --caqui: #f07252;
+    --sobre-caqui: var(--eucalipto);
+    --grao: 0;
+  }
+}
+
+/* Os componentes do shadcn leem estas variáveis; apontamos todas para os tokens acima. */
+:root {
+  --background: var(--eucalipto);
+  --foreground: var(--nanquim);
+  --card: var(--papel);
+  --card-foreground: var(--nanquim);
+  --popover: var(--papel);
+  --popover-foreground: var(--nanquim);
+  --primary: var(--caqui);
+  --primary-foreground: var(--sobre-caqui);
+  --secondary: var(--folha);
+  --secondary-foreground: var(--nanquim);
+  --muted: color-mix(in oklab, var(--musgo) 12%, transparent);
+  --muted-foreground: var(--musgo);
+  --accent: color-mix(in oklab, var(--musgo) 12%, transparent);
+  --accent-foreground: var(--nanquim);
+  --destructive: var(--caqui);
+  --border: color-mix(in oklab, var(--musgo) 28%, transparent);
+  --input: color-mix(in oklab, var(--musgo) 32%, transparent);
+  --ring: var(--nanquim);
+  --radius: 10px;
+}
+
+@theme inline {
+  --color-eucalipto: var(--eucalipto);
+  --color-folha: var(--folha);
+  --color-papel: var(--papel);
+  --color-nanquim: var(--nanquim);
+  --color-musgo: var(--musgo);
+  --color-caqui: var(--caqui);
+  --color-sobre-caqui: var(--sobre-caqui);
+
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+
+  --font-sans: var(--font-bricolage), ui-sans-serif, sans-serif;
+  --font-heading: var(--font-bricolage), ui-sans-serif, sans-serif;
+
+  /* Raio varia com a hierarquia: carta < controle < painel. */
+  --radius-carta: 6px;
+  --radius-controle: 10px;
+  --radius-painel: 22px;
+  --radius-sm: 6px;
+  --radius-md: 8px;
+  --radius-lg: 10px;
+  --radius-xl: 14px;
+
+  --ease-suave: cubic-bezier(0.22, 1, 0.36, 1);
+
+  /* Sombra só para cartas: curta, quase uma borda inferior. */
+  --shadow-carta: 0 1px 0 color-mix(in oklab, var(--nanquim) 10%, transparent),
+    0 2px 6px -2px color-mix(in oklab, var(--nanquim) 18%, transparent);
+  --shadow-carta-alta: 0 1px 0 color-mix(in oklab, var(--nanquim) 10%, transparent),
+    0 10px 18px -8px color-mix(in oklab, var(--nanquim) 28%, transparent);
+
+  --animate-espera: espera 3s ease-in-out infinite;
+
+  @keyframes espera {
+    0%,
+    100% {
+      opacity: 0.45;
+    }
+    50% {
+      opacity: 0.9;
+    }
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  html {
+    @apply font-sans;
+    font-optical-sizing: auto; /* a Bricolage ajusta o desenho ao tamanho (eixo opsz) */
+  }
+
+  body {
+    @apply bg-background text-foreground antialiased;
+  }
+
+  /* Grão de papel sobre o fundo, 3% de opacidade. Desligado no escuro (--grao: 0). */
+  body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    z-index: -1;
+    pointer-events: none;
+    opacity: var(--grao);
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23g)'/%3E%3C/svg%3E");
+  }
+
+  /* Foco sempre visível para quem navega pelo teclado. */
+  :focus-visible {
+    outline: 2px solid var(--nanquim);
+    outline-offset: 3px;
+  }
+
+  ::selection {
+    background: color-mix(in oklab, var(--caqui) 25%, transparent);
+  }
+}
+
+@layer utilities {
+  .algarismos {
+    font-variant-numeric: tabular-nums;
+  }
+
+  /* Faces da carta na revelação (flip 3D). */
+  .face-oculta {
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-espera {
+    animation: none;
+    opacity: 0.6;
+  }
+}
