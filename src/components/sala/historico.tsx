@@ -25,7 +25,7 @@ export function Historico({ codigoSala }: { codigoSala: string }) {
           Rodadas
         </h2>
         <Select value={filtro} onValueChange={setFiltro}>
-          <SelectTrigger size="sm" aria-label="Filtrar rodadas" className="w-auto min-w-32 bg-transparent">
+          <SelectTrigger size="sm" aria-label="Filtrar rodadas" className="w-auto min-w-28 bg-transparent">
             <SelectValue />
           </SelectTrigger>
           <SelectContent position="popper" align="end">
@@ -70,7 +70,8 @@ function ItemHistorico({ rodada, codigoSala }: { rodada: Rodada; codigoSala: str
       {revelada && rodada.estimativaFinal ? (
         <FaceCarta valor={rodada.estimativaFinal} tamanho="mini" />
       ) : revelada ? (
-        <LugarVazio tamanho="mini" />
+        // Revelada sem estimativa final: face com um traço. O contorno tracejado já significa "ainda não votou".
+        <FaceCarta valor="–" tamanho="mini" />
       ) : (
         <VersoCarta semente={codigoSala} tamanho="mini" />
       )}

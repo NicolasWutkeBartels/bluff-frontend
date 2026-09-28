@@ -30,7 +30,7 @@ export function Mao({ cartas, ativa, meuVoto, aoVotar, dica }: Props) {
         <p className="text-[13px] text-musgo">{dica}</p>
       </div>
 
-      <ul className="flex flex-wrap gap-2.5 sm:gap-3">
+      <ul className="flex flex-wrap gap-2 sm:gap-3">
         {cartas.map((valor) => {
           const escolhida = ativa && meuVoto === valor;
           const esmaecida = !ativa || (meuVoto !== null && !escolhida);

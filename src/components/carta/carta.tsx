@@ -13,14 +13,14 @@ export type TamanhoCarta = "mini" | "mesa" | "mao" | "vitrine";
 const larguras: Record<TamanhoCarta, string> = {
   mini: "w-7",
   mesa: "w-[64px] sm:w-[76px]",
-  mao: "w-[52px] sm:w-[64px]",
+  mao: "w-[40px] min-[420px]:w-[44px] sm:w-[64px]",
   vitrine: "w-[104px] sm:w-[128px]",
 };
 
 const tamanhosDoValor: Record<TamanhoCarta, string> = {
   mini: "text-[13px] font-[650]",
   mesa: "text-[28px] sm:text-[32px] font-[700]",
-  mao: "text-[22px] sm:text-[26px] font-[650]",
+  mao: "text-[18px] sm:text-[26px] font-[650]",
   vitrine: "text-[52px] sm:text-[64px] font-[700]",
 };
 
@@ -54,11 +54,6 @@ export function FaceCarta({ valor, tamanho, className }: { valor: string; tamanh
       >
         {valor}
       </span>
-      {tamanho !== "mini" && (
-        <span className="algarismos absolute top-1.5 left-2 text-[11px] leading-none font-[600] text-musgo [font-stretch:85%]">
-          {valor}
-        </span>
-      )}
     </CorpoCarta>
   );
 }

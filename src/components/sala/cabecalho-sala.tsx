@@ -52,7 +52,7 @@ export function CabecalhoSala({ codigo, nome, conexao, aoSair }: Props) {
         </div>
       </div>
 
-      <div className="flex items-center gap-5">
+      <div className="flex w-full items-center justify-between gap-5 pl-9 sm:w-auto sm:pl-0">
         <IndicadorConexao estado={conexao} />
         <Button variant="fantasma" size="compacto" onClick={aoSair}>
           <LogOut aria-hidden />

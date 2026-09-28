@@ -191,8 +191,7 @@ Molas do Motion com `stiffness` baixa e `damping` alto (sem quicar).
 | Momento                  | O que acontece                                                | Ferramenta |
 |--------------------------|---------------------------------------------------------------|------------|
 | Clique em botão          | `active:scale-[0.98]` e transição de cor                      | Tailwind   |
-| Escolher carta           | sobe 6 px, contorno caqui                                     | Motion     |
-| Votar                    | sua carta da mesa vira verso; as outras da mão esmaecem       | Motion     |
+| Escolher carta (= votar) | a carta desliza da mão até o seu lugar na mesa (mesmo `layoutId`), fica 6 px acima e com contorno caqui; as outras da mão esmaecem | Motion |
 | **Revelação**            | todas as cartas da mesa giram no eixo Y (~400 ms), 60 ms entre elas | Motion |
 | Consenso                 | anel caqui pulsa uma vez em volta da mesa                     | Motion     |
 | Alguém entra ou sai      | cartas se reposicionam (`layout`); a nova aparece com fade    | Motion     |
@@ -218,3 +217,21 @@ Reli o plano procurando o que eu faria para qualquer app parecido. Quatro coisas
 Também cortei do plano inicial: um gradiente radial atrás do leque da home (enfeite)
 e uma cor diferente para cada estado da rodada (competiria com o caqui; o estado da rodada já
 está visível nas cartas).
+
+---
+
+## 9. Revisão com capturas de tela (fase 6)
+
+Capturas da home e da sala (claro, escuro, celular, movimento reduzido) foram tiradas com o app
+rodando de verdade, com três pessoas numa sala. Crítica, como designer exigente:
+
+| O que vi | Decisão |
+|---|---|
+| **O índice no canto das cartas** repetia o valor que já está grande no centro. Na mão eram sete números pequenos duplicados, só ruído. Ele existe no baralho real porque as cartas são seguradas em leque, o que não acontece aqui. | **Removido.** Era o enfeite que não servia ao projeto. |
+| No celular, a mão quebrava em duas linhas (7 cartas de 52 px não cabem em 342 px). | Cartas da mão com 40 px abaixo de 420 px de largura: cabem numa linha. |
+| O histórico usava o contorno tracejado para "revelada sem estimativa", o mesmo símbolo que na mesa quer dizer "ainda não votou". | Agora é uma face com um traço (–). Cada forma tem um só significado. |
+| O histórico mostrava "Em votação, 0 votos" enquanto a mesa mostrava 2 votos. | Para a rodada em votação, o histórico mostra só o status; a contagem ao vivo fica na mesa. |
+| No celular, "Ao vivo" e "Sair da sala" ficavam soltos numa linha própria, desalinhados. | Alinhados com o nome da sala e distribuídos nas pontas. |
+
+O que ficou e por quê: o anel de consenso (aparece uma vez, só quando todos concordam, e é o
+único movimento em caqui), o grão de 3% (some quando você procura, mas tira o "chapado" do fundo claro).
