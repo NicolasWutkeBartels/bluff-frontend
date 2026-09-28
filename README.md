@@ -1,36 +1,47 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Bluff (app)
 
-## Getting Started
+Front do Bluff, um Planning Poker: cada pessoa escolhe uma carta em segredo e todos viram juntos.
+Next.js (App Router), Tailwind, shadcn, Motion, React Query, Axios, Zod e STOMP.
 
-First, run the development server:
+A API fica em outro repositório (`bluff-backend`).
+
+## Rodar localmente
+
+Pré-requisitos: Node 22 e a API rodando (veja o README do `bluff-backend`).
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+cp .env.example .env.local   # ajuste NEXT_PUBLIC_API_URL se a API não estiver em localhost:8080
+npm install
+npm run dev                  # http://localhost:3000
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+| Variável | Padrão | Para quê |
+|---|---|---|
+| `NEXT_PUBLIC_API_URL` | `http://localhost:8080` | API REST. O WebSocket usa o mesmo endereço com `ws://` e `/ws`. |
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+Em produção, a origem do front precisa estar em `CORS_ORIGENS` na API.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Onde está cada coisa
 
-## Learn More
+```
+src/
+  app/                    rotas: / (home) e /sala/[codigo]
+  components/
+    carta/                a carta e o verso Truchet (a identidade visual)
+    home/                 formulários e seções da home
+    sala/                 mesa, mão, painel da rodada, histórico, conexão
+    ui/                   componentes do shadcn, reestilizados pelos tokens
+  lib/
+    api.ts                chamadas REST e leitura de erros
+    ao-vivo.ts            STOMP: eventos no cache e ressincronização ao reconectar
+    consultas.ts          hooks do React Query (com cache para status e baralhos)
+    esquemas.ts           Zod: formulários, respostas da API e eventos
+    sessao.ts             o que fica no localStorage (id do participante, sua carta)
+    truchet.ts            o gerador do verso das cartas
+```
 
-To learn more about Next.js, take a look at the following resources:
+## Documentação
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- [docs/design.md](docs/design.md): conceito visual, cores, tipografia, layout, movimento e a revisão com capturas.
+- `docs/aprendizado.md` no repositório `bluff-backend`: o caminho de um voto do clique até o banco,
+  passando por este front.
