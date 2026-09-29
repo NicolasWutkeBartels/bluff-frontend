@@ -2,27 +2,29 @@ import { cn } from "cn";
 import { useMemo } from "react";
 
 import { caminhoTruchet } from "@/lib/truchet";
+import type { WithClassName } from "@/types/common";
 
-type Props = {
-  /** Código da sala (ou outro texto): define o desenho. */
-  semente: string;
-  colunas?: number;
-  linhas?: number;
-  className?: string;
-};
+type Props = WithClassName<{
+  seed: string;
+  columns?: number;
+  rows?: number;
+}>;
 
 const LADO = 10;
 const MARGEM = 4;
 
-/**
- * O verso da carta: uma moldura fina e, dentro dela, o ladrilho de Truchet da sala.
- * O traço tem espessura fixa na tela (non-scaling-stroke), então o verso fica igual
- * numa carta de 28 px ou de 80 px.
- */
-export function VersoTruchet({ semente, colunas = 4, linhas = 6, className }: Props) {
-  const d = useMemo(() => caminhoTruchet(semente, colunas, linhas, LADO), [semente, colunas, linhas]);
-  const largura = colunas * LADO + MARGEM * 2;
-  const altura = linhas * LADO + MARGEM * 2;
+export function VersoTruchet({
+  seed,
+  columns = 4,
+  rows = 6,
+  className,
+}: Props) {
+  const d = useMemo(
+    () => caminhoTruchet(seed, columns, rows, LADO),
+    [seed, columns, rows],
+  );
+  const largura = columns * LADO + MARGEM * 2;
+  const altura = rows * LADO + MARGEM * 2;
 
   return (
     <svg

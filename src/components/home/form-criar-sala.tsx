@@ -1,97 +1,92 @@
 "use client";
 
-import { useMutation } from "@tanstack/react-query";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
-import { useState, type FormEvent } from "react";
+import { useForm } from "react-hook-form";
 
-import { ariaDoCampo, Campo, errosPorCampo, MensagemErro } from "@/components/formulario/campo";
-import { SeletorPapel } from "@/components/formulario/seletor-papel";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { criarSala, lerErro } from "@/lib/api";
-import { useBaralhos } from "@/lib/consultas";
-import { formCriarSala, type FormCriarSala } from "@/lib/esquemas";
-import { salvarSessao } from "@/lib/sessao";
+import { Form } from "@/components/form/form";
+import { FormError } from "@/components/form/form-error";
+import { PapelField } from "@/components/form/papel-field";
+import { SelectField } from "@/components/form/select-field";
+import { SubmitButton } from "@/components/form/submit-button";
+import { TextField } from "@/components/form/text-field";
+import { FieldGroup } from "@/components/ui/field";
+import { useBaralhos } from "@/hooks/use-baralhos";
+import { useCriarSala } from "@/hooks/use-sala";
+import { criarSalaFormSchema, type CriarSalaForm } from "@/schemas/sala.schema";
 
 export function FormCriarSala() {
   const router = useRouter();
   const baralhos = useBaralhos();
-  const [form, setForm] = useState<FormCriarSala>({ nomeSala: "", apelido: "", baralho: "FIBONACCI", papel: "VOTANTE" });
-  const [erros, setErros] = useState<Record<string, string>>({});
-
-  const criacao = useMutation({
-    mutationFn: criarSala,
-    onSuccess: ({ codigoSala, participante }) => {
-      salvarSessao(codigoSala, { participanteId: participante.id, apelido: participante.apelido });
-      router.push(`/sala/${codigoSala}`);
+  const criacao = useCriarSala();
+  const form = useForm<CriarSalaForm>({
+    resolver: zodResolver(criarSalaFormSchema),
+    defaultValues: {
+      nomeSala: "",
+      apelido: "",
+      baralho: "FIBONACCI",
+      papel: "VOTANTE",
     },
-    onError: (erro) => setErros(lerErro(erro).campos ?? {}),
   });
 
-  function enviar(evento: FormEvent) {
-    evento.preventDefault();
-    const resultado = formCriarSala.safeParse(form);
-    if (!resultado.success) {
-      setErros(errosPorCampo(resultado.error));
-      return;
-    }
-    setErros({});
-    criacao.mutate(resultado.data);
+  const opcoesDeBaralho = (baralhos.data ?? []).map((baralho) => ({
+    value: baralho.codigo,
+    label: (
+      <>
+        {baralho.descricao}
+        <span className="algarismos text-musgo">
+          {baralho.cartas.join(" ")}
+        </span>
+      </>
+    ),
+  }));
+
+  async function enviar(dados: CriarSalaForm) {
+    const { codigoSala } = await criacao.mutateAsync(dados);
+    router.push(`/sala/${codigoSala}`);
   }
 
-  const mudar = <K extends keyof FormCriarSala>(campo: K, valor: FormCriarSala[K]) =>
-    setForm((atual) => ({ ...atual, [campo]: valor }));
-
   return (
-    <form onSubmit={enviar} noValidate className="grid gap-5">
-      <Campo id="nome-sala" rotulo="Nome da sala" erro={erros.nomeSala}>
-        <Input
-          {...ariaDoCampo("nome-sala", erros.nomeSala)}
+    <Form methods={form} onSubmit={enviar}>
+      <FieldGroup>
+        <TextField
+          name="nomeSala"
+          isRequired
+          label="Nome da sala"
           placeholder="Time Azul, sprint 42"
-          value={form.nomeSala}
-          onChange={(e) => mudar("nomeSala", e.target.value)}
           maxLength={80}
         />
-      </Campo>
 
-      <div className="grid gap-5 sm:grid-cols-2">
-        <Campo id="apelido-criar" rotulo="Seu apelido" erro={erros.apelido}>
-          <Input
-            {...ariaDoCampo("apelido-criar", erros.apelido)}
+        <div className="grid gap-5 sm:grid-cols-2">
+          <TextField
+            name="apelido"
+            isRequired
+            label="Seu apelido"
             placeholder="Como o time te chama"
-            value={form.apelido}
-            onChange={(e) => mudar("apelido", e.target.value)}
             maxLength={30}
             autoComplete="nickname"
           />
-        </Campo>
+          <SelectField
+            name="baralho"
+            isRequired
+            label="Baralho"
+            options={opcoesDeBaralho}
+            placeholder={baralhos.isPending ? "Carregando…" : "Escolha"}
+          />
+        </div>
 
-        <Campo id="baralho" rotulo="Baralho" erro={erros.baralho}>
-          <Select value={form.baralho} onValueChange={(valor) => mudar("baralho", valor)}>
-            <SelectTrigger id="baralho" aria-invalid={erros.baralho ? true : undefined}>
-              <SelectValue placeholder={baralhos.isPending ? "Carregando…" : "Escolha"} />
-            </SelectTrigger>
-            <SelectContent position="popper">
-              {baralhos.data?.map((b) => (
-                <SelectItem key={b.codigo} value={b.codigo}>
-                  {b.descricao}
-                  <span className="algarismos text-musgo">{b.cartas.join(" ")}</span>
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-        </Campo>
-      </div>
+        <PapelField />
 
-      <SeletorPapel valor={form.papel} aoMudar={(papel) => mudar("papel", papel)} />
-
-      <div className="grid gap-3 pt-1">
-        <Button type="submit" disabled={criacao.isPending} className="w-full sm:w-fit">
-          {criacao.isPending ? "Criando a sala…" : "Criar sala"}
-        </Button>
-        {criacao.isError && !Object.keys(erros).length && <MensagemErro>{lerErro(criacao.error).mensagem}</MensagemErro>}
-      </div>
-    </form>
+        <div className="grid gap-3 pt-1">
+          <SubmitButton
+            labelSaving="Criando a sala…"
+            className="w-full sm:w-fit"
+          >
+            Criar sala
+          </SubmitButton>
+          <FormError />
+        </div>
+      </FieldGroup>
+    </Form>
   );
 }

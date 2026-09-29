@@ -1,26 +1,29 @@
 import { cn } from "cn";
 
-import type { EstadoConexao } from "@/lib/ao-vivo";
+import type { EstadoConexao } from "@/hooks/use-sala-ao-vivo";
 
-const textos: Record<EstadoConexao, string> = {
+const LABELS: Record<EstadoConexao, string> = {
   conectando: "Conectando…",
   "ao-vivo": "Ao vivo",
   reconectando: "Reconectando…",
 };
 
-/** Discreto de propósito: só chama atenção (pulso lento) quando a conexão caiu. */
-export function IndicadorConexao({ estado }: { estado: EstadoConexao }) {
+export function IndicadorConexao({ conexao }: { conexao: EstadoConexao }) {
   return (
-    <p role="status" aria-live="polite" className="flex items-center gap-2 text-[13px] text-musgo">
+    <p
+      role="status"
+      aria-live="polite"
+      className="flex items-center gap-2 text-[0.8125rem] text-musgo"
+    >
       <span
         aria-hidden
         className={cn(
           "size-1.5 rounded-full",
-          estado === "ao-vivo" ? "bg-musgo" : "border border-musgo",
-          estado === "reconectando" && "animate-espera",
+          conexao === "ao-vivo" ? "bg-musgo" : "border border-musgo",
+          conexao === "reconectando" && "animate-espera",
         )}
       />
-      {textos[estado]}
+      {LABELS[conexao]}
     </p>
   );
 }

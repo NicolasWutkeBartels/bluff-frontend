@@ -1,18 +1,18 @@
-import { FaceCarta, VersoCarta } from "@/components/carta/carta";
-import { SEMENTE_DA_MARCA } from "@/components/marca/logo";
+import { FaceCarta } from "@/components/carta/face-carta";
+import { VersoCarta } from "@/components/carta/verso-carta";
+import { SEMENTE_DA_MARCA } from "@/constants/marca";
 
-/** Três cartas abertas em leque: duas escondidas e uma revelada. Resume o jogo sem texto. */
 export function LequeDeCartas() {
   return (
-    <div aria-hidden className="relative mx-auto h-[190px] w-[240px] sm:h-[220px] sm:w-[280px]">
-      <div className="absolute top-4 left-2 origin-bottom-right -rotate-[9deg]">
-        <VersoCarta semente={SEMENTE_DA_MARCA} tamanho="vitrine" />
+    <div aria-hidden className="relative mx-auto h-47.5 w-60 sm:h-55 sm:w-70">
+      <div className="absolute top-4 left-2 origin-bottom-right -rotate-9">
+        <VersoCarta seed={SEMENTE_DA_MARCA} size="vitrine" />
       </div>
-      <div className="absolute top-1 left-1/2 -translate-x-1/2 origin-bottom -rotate-[1deg]">
-        <VersoCarta semente="REVELE" tamanho="vitrine" />
+      <div className="absolute top-1 left-1/2 -translate-x-1/2 origin-bottom -rotate-1">
+        <VersoCarta seed="REVELE" size="vitrine" />
       </div>
-      <div className="absolute top-4 right-2 origin-bottom-left rotate-[8deg]">
-        <FaceCarta valor="8" tamanho="vitrine" />
+      <div className="absolute top-4 right-2 origin-bottom-left rotate-8">
+        <FaceCarta value="8" size="vitrine" />
       </div>
     </div>
   );
