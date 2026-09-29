@@ -2,19 +2,15 @@
 @import "tw-animate-css";
 @import "shadcn/tailwind.css";
 
-/* O tema segue o sistema operacional. Detalhes das escolhas em docs/design.md. */
 @custom-variant dark (@media (prefers-color-scheme: dark));
 
-/* ---------------------------------------------------------------------------
- * Tokens do Bluff
- * ------------------------------------------------------------------------- */
 :root {
-  --eucalipto: #dce3de; /* fundo */
-  --folha: #e8ede9; /* superfícies */
-  --papel: #f6f8f5; /* face da carta */
-  --nanquim: #18211e; /* texto e traço do verso */
-  --musgo: #52615b; /* texto secundário, bordas */
-  --caqui: #c8432a; /* o único acento */
+  --eucalipto: #dce3de;
+  --folha: #e8ede9;
+  --papel: #f6f8f5;
+  --nanquim: #18211e;
+  --musgo: #52615b;
+  --caqui: #c8432a;
   --sobre-caqui: var(--papel);
   --grao: 0.03;
 }
@@ -32,7 +28,6 @@
   }
 }
 
-/* Os componentes do shadcn leem estas variáveis; apontamos todas para os tokens acima. */
 :root {
   --background: var(--eucalipto);
   --foreground: var(--nanquim);
@@ -52,7 +47,7 @@
   --border: color-mix(in oklab, var(--musgo) 28%, transparent);
   --input: color-mix(in oklab, var(--musgo) 32%, transparent);
   --ring: var(--nanquim);
-  --radius: 10px;
+  --radius: 0.625rem;
 }
 
 @theme inline {
@@ -86,21 +81,21 @@
   --font-sans: var(--font-bricolage), ui-sans-serif, sans-serif;
   --font-heading: var(--font-bricolage), ui-sans-serif, sans-serif;
 
-  /* Raio varia com a hierarquia: carta < controle < painel. */
-  --radius-carta: 6px;
-  --radius-controle: 10px;
-  --radius-painel: 22px;
-  --radius-sm: 6px;
-  --radius-md: 8px;
-  --radius-lg: 10px;
-  --radius-xl: 14px;
+  --radius-carta: 0.375rem;
+  --radius-controle: 0.625rem;
+  --radius-painel: 1.375rem;
+  --radius-sm: 0.375rem;
+  --radius-md: 0.5rem;
+  --radius-lg: 0.625rem;
+  --radius-xl: 0.875rem;
 
   --ease-suave: cubic-bezier(0.22, 1, 0.36, 1);
 
-  /* Sombra só para cartas: curta, quase uma borda inferior. */
-  --shadow-carta: 0 1px 0 color-mix(in oklab, var(--nanquim) 10%, transparent),
+  --shadow-carta:
+    0 1px 0 color-mix(in oklab, var(--nanquim) 10%, transparent),
     0 2px 6px -2px color-mix(in oklab, var(--nanquim) 18%, transparent);
-  --shadow-carta-alta: 0 1px 0 color-mix(in oklab, var(--nanquim) 10%, transparent),
+  --shadow-carta-alta:
+    0 1px 0 color-mix(in oklab, var(--nanquim) 10%, transparent),
     0 10px 18px -8px color-mix(in oklab, var(--nanquim) 28%, transparent);
 
   --animate-espera: espera 3s ease-in-out infinite;
@@ -123,14 +118,13 @@
 
   html {
     @apply font-sans;
-    font-optical-sizing: auto; /* a Bricolage ajusta o desenho ao tamanho (eixo opsz) */
+    font-optical-sizing: auto;
   }
 
   body {
     @apply bg-background text-foreground antialiased;
   }
 
-  /* Grão de papel sobre o fundo, 3% de opacidade. Desligado no escuro (--grao: 0). */
   body::before {
     content: "";
     position: fixed;
@@ -141,7 +135,6 @@
     background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23g)'/%3E%3C/svg%3E");
   }
 
-  /* Foco sempre visível para quem navega pelo teclado. */
   :focus-visible {
     outline: 2px solid var(--nanquim);
     outline-offset: 3px;
@@ -157,7 +150,6 @@
     font-variant-numeric: tabular-nums;
   }
 
-  /* Faces da carta na revelação (flip 3D). */
   .face-oculta {
     backface-visibility: hidden;
     -webkit-backface-visibility: hidden;
